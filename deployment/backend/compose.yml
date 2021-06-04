@@ -1,0 +1,143 @@
+version: "3.8"
+services:
+
+    ms_core_gateway:
+        environment:
+            - DEBUG
+            - PORT=${MS_CORE_GATEWAY_PORT}
+            - MS_CORE_AUTHENTICATION_HOST
+            - MS_CORE_AUTHENTICATION_PORT
+            - MS_CORE_AUTHORIZATION_HOST
+            - MS_CORE_AUTHORIZATION_PORT
+            - MS_CORE_ROUTER_HOST
+            - MS_CORE_ROUTER_PORT
+            - TZ=America/Bogota
+        image: kte_ms_core_gateway:${TAG_ms_core_gateway}
+        ports:
+            - ${MS_CORE_GATEWAY_PORT}:${MS_CORE_GATEWAY_PORT}
+        networks:
+            kte_network:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+
+
+
+    ms_core_authentication:
+        environment:
+            - DEBUG
+            - PORT=${MS_CORE_AUTHENTICATION_PORT}
+            - MONGODB_NAME
+            - MONGODB_HOST
+            - MONGODB_PORT
+            - MONGODB_USER
+            - MONGODB_PASSWORD
+            - MONGODB_POOL_SIZE
+            - MONGODB_REPLICA_SET_NAME
+            - MS_CORE_EMAIL_HOST
+            - MS_CORE_EMAIL_PORT
+            - MS_CORE_SMS_HOST
+            - MS_CORE_SMS_PORT
+            - KTE_FRONT_MLM_POS
+            - KTE_FRONT_MLM_CLIENT
+            - KTE_FRONT_MLM_ADMIN
+            - SESSION_EXPIRATION_TIME_IN_SECONDS
+            - TZ=America/Bogota
+        image: kte_ms_core_authentication:${TAG_ms_core_authentication}
+        networks:
+            kte_network:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+
+
+
+
+    ms_core_authorization:
+        environment:
+            - DEBUG
+            - PORT=${MS_CORE_AUTHORIZATION_PORT}
+            - MONGODB_NAME
+            - MONGODB_HOST
+            - MONGODB_PORT
+            - MONGODB_USER
+            - MONGODB_PASSWORD
+            - MONGODB_POOL_SIZE
+            - MONGODB_REPLICA_SET_NAME
+            - TZ=America/Bogota
+        image: kte_ms_core_authorization:${TAG_ms_core_authorization}
+        networks:
+            kte_network:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+
+
+
+    ms_core_router:
+        environment:
+            - DEBUG
+            - PORT=${MS_CORE_ROUTER_PORT}
+            - MONGODB_NAME
+            - MONGODB_HOST
+            - MONGODB_PORT
+            - MONGODB_USER
+            - MONGODB_PASSWORD
+            - MONGODB_POOL_SIZE
+            - MONGODB_REPLICA_SET_NAME
+            - MS_MLM_ADMIN_HOST
+            - MS_MLM_ADMIN_PORT
+            - MS_MLM_CLIENT_HOST
+            - MS_MLM_CLIENT_PORT
+            - MS_MLM_POS_HOST
+            - MS_MLM_POS_PORT
+            - MS_MLM_SHIPPING_HOST
+            - MS_MLM_SHIPPING_PORT
+            - MS_MLM_BULKLOAD_HOST
+            - MS_MLM_BULKLOAD_PORT
+            - TZ=America/Bogota
+        image: kte_ms_core_router:${TAG_ms_core_router}
+        networks:
+            kte_network:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+
+
+
+    ms_core_email:
+        environment:
+            - DEBUG
+            - PORT=${MS_CORE_EMAIL_PORT}
+            - GMAIL_SMTP_RELAY_HOST
+            - GMAIL_SMTP_RELAY_PORT
+            - GMAIL_SMTP_RELAY_SENDER_DOMAIN
+            - GMAIL_SMTP_RELAY_SENDER_NAME
+            - GMAIL_SMTP_RELAY_SENDER_ADDRESS
+            - KTE_FRONT_MLM_POS
+            - KTE_FRONT_MLM_CLIENT
+            - KTE_FRONT_MLM_ADMIN
+            - TZ=America/Bogota
+        image: kte_ms_core_email:${TAG_ms_core_email}
+        networks:
+            kte_network:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+
+
+
+
+networks:
+    sur_network:
+        driver: overlay
