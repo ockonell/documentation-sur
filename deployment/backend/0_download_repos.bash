@@ -19,7 +19,7 @@ fetch_kte_backend_project(){
 	echo '-------------------------------------------------------------------------'
 	MS_NAME=$1
 	echo "MICROSERVICE: $MS_NAME"
-	git clone git@repo.koghi.com/surcompany/esb/backend/$MS_NAME.git
+	git clone git@repo.koghi.com:surcompany/esb/backend/$MS_NAME.git
 	cd $MS_NAME
 	git fetch --all --tags
 	LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
@@ -30,8 +30,6 @@ fetch_kte_backend_project(){
 }
 
 
-fetch_kte_backend_project "ms_core_gateway"
-#fetch_kte_backend_project "ms_core_authentication"
-#fetch_kte_backend_project "ms_core_authorization"
-#fetch_kte_backend_project "ms_core_router"
-#fetch_kte_backend_project "ms_core_email"
+fetch_kte_backend_project "ms_esb_poduct"
+#fetch_kte_backend_project "ms_vtex_api"
+#fetch_kte_backend_project "ms_sap_api"
