@@ -1,3 +1,4 @@
 *.swp
 TMP
+*TMP
 *.env
