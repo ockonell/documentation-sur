@@ -13,7 +13,7 @@ rm -rf $MICROSERVICES_FOLDER
 mkdir $MICROSERVICES_FOLDER
 cd $MICROSERVICES_FOLDER
 
-MS_FOLDER_TEMP=pwd
+MS_FOLDER_TEMP=$(pwd)
 
 fetch_kte_backend_project(){
 	echo '-------------------------------------------------------------------------'
@@ -31,7 +31,7 @@ fetch_kte_backend_project(){
 
 
 fetch_kte_backend_project "ms_core_cron"
-fetch_kte_backend_project "ms_esb_poduct"
+fetch_kte_backend_project "ms_esb_product"
 fetch_kte_backend_project "ms_esb_queue"
 fetch_kte_backend_project "ms_vtex_api"
 fetch_kte_backend_project "ms_sap_api"
