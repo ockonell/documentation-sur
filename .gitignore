@@ -2,3 +2,5 @@
 TMP
 *TMP
 *.env
+*.log
+*log
