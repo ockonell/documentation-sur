@@ -1,22 +1,39 @@
 version: "3.8"
 services:
 
-    ms_core_gateway:
+
+
+    ms_core_cron:
         environment:
             - DEBUG
-            - PORT=${MS_CORE_GATEWAY_PORT}
-            - MS_CORE_AUTHENTICATION_HOST
-            - MS_CORE_AUTHENTICATION_PORT
-            - MS_CORE_AUTHORIZATION_HOST
-            - MS_CORE_AUTHORIZATION_PORT
-            - MS_CORE_ROUTER_HOST
-            - MS_CORE_ROUTER_PORT
+            - PORT=${MS_CORE_CRON_PORT}
+            - MONGODB_NAME
+            - MONGODB_HOST
+            - MONGODB_PORT
+            - MONGODB_USER
+            - MONGODB_PASSWORD
+            - MONGODB_POOL_SIZE
+            - MONGODB_REPLICA_SET_NAME
+            - MILLISECONDS_REPEAT
+            - CRON_CREATE_SKU_PRICES_PATTERNS
+            - MILLISECONDS_SKU_PRICES_FAILED_REPEAT
+            - MILLISECONDS_PRODUCT_FAILED_REPEAT
+            - MILLISECONDS_INVENTORIES_FAILED_REPEAT
+            - MILLISECONDS_PRODUCT_REPEAT
+            - MILLISECONDS_CHECK_INVOICE_REPEAT
+            - MILLISECONDS_CHECK_INVOICE_FAILED_REPEAT
+            - MILLISECONDS_GET_ORDER_V2S_FAILED_REPEAT
+            - MILLISECONDS_INVENTORIES_REPEAT
+            - MS_QUEUE_HOST
+            - MS_QUEUE_PORT
+            - MS_SAP_API_HOST
+            - MS_SAP_API_PORT
             - TZ=America/Bogota
-        image: kte_ms_core_gateway:${TAG_ms_core_gateway}
         ports:
-            - ${MS_CORE_GATEWAY_PORT}:${MS_CORE_GATEWAY_PORT}
+            - ${MS_CORE_CRON_PORT}:${MS_CORE_CRON_PORT}
+        image: sap_ms_core_cron:${TAG_ms_core_cron}
         networks:
-            kte_network:
+            sap_network:
         deploy:
             mode: replicated
             replicas: 1
@@ -25,10 +42,10 @@ services:
 
 
 
-    ms_core_authentication:
+    ms_core_hook:
         environment:
             - DEBUG
-            - PORT=${MS_CORE_AUTHENTICATION_PORT}
+            - PORT=${MS_CORE_HOOK_PORT}
             - MONGODB_NAME
             - MONGODB_HOST
             - MONGODB_PORT
@@ -36,18 +53,18 @@ services:
             - MONGODB_PASSWORD
             - MONGODB_POOL_SIZE
             - MONGODB_REPLICA_SET_NAME
-            - MS_CORE_EMAIL_HOST
-            - MS_CORE_EMAIL_PORT
-            - MS_CORE_SMS_HOST
-            - MS_CORE_SMS_PORT
-            - KTE_FRONT_MLM_POS
-            - KTE_FRONT_MLM_CLIENT
-            - KTE_FRONT_MLM_ADMIN
-            - SESSION_EXPIRATION_TIME_IN_SECONDS
+            - PAYMENT_APPROVED_HOOK_NAME
+            - MS_VTEX_API_HOST
+            - MS_VTEX_API_PORT
+            - MS_QUEUE_HOST
+            - MS_QUEUE_PORT
+            - MS_CORE_HOOK_URL
             - TZ=America/Bogota
-        image: kte_ms_core_authentication:${TAG_ms_core_authentication}
+        ports:
+            - ${MS_CORE_HOOK_PORT}:${MS_CORE_HOOK_PORT}
+        image: sap_ms_core_hook:${TAG_ms_core_hook}
         networks:
-            kte_network:
+            sap_network:
         deploy:
             mode: replicated
             replicas: 1
@@ -56,11 +73,76 @@ services:
 
 
 
-
-    ms_core_authorization:
+    ms_vtex_api:
         environment:
             - DEBUG
-            - PORT=${MS_CORE_AUTHORIZATION_PORT}
+            - PORT=${MS_VTEX_API_PORT}
+            - VTEX_REST_API_BASE_PATH
+            - VTEX_REST_API_APP_KEY
+            - VTEX_REST_API_APP_TOKEN
+            - VTEX_REST_API_ACCOUNT_NAME
+            - VTEX_REST_API_HOST
+            - VTEX_REST_API_TRACKER_BASE_PATH
+            - VTEX_REST_API_TRACKER
+            - VTEX_REST_API_PRODUCT
+            - VTEX_REST_API_SKU
+            - VTEX_REST_API_PRICES
+            - VTEX_REST_API_HOOK
+            - VTEX_REST_API_ORDERS
+            - VTEX_REST_API_INVENTORY
+            - VTEX_REST_API_WAREHOUSE_ID
+            - TZ=America/Bogota
+        ports:
+            - ${MS_VTEX_API_PORT}:${MS_VTEX_API_PORT}
+        image: sap_ms_vtex_api:${TAG_ms_vtex_api}
+        networks:
+            sap_network:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+
+
+
+    ms_sap_api:
+        environment:
+            - DEBUG
+            - PORT=${MS_SAP_API_PORT}
+            - IGNORE_SSL
+            - SAP_SERVICE_LAYER_BASE_PATH
+            - SAP_SERVICE_LAYER_COMPANY_DB
+            - SAP_SERVICE_LAYER_USER_NAME
+            - SAP_SERVICE_LAYER_PASSWORD
+            - SAP_WAREHOUSES
+            - SAP_ADVANCE_INVOICE_DOWNPAYMENTTYPE
+            - SAP_ADVANCE_INVOICE_ITEMCODE
+            - SAP_ADVANCE_INVOICE_QUANTITY
+            - SAP_ADVANCE_INVOICE_VATGROUP
+            - SAP_ADVANCE_INVOICE_TAXLIABLE
+            - SAP_ADVANCE_INVOICE_WTLIABLE
+            - SAP_PAYMENT_RECEIVED_DOCCURRENCY
+            - SAP_PAYMENT_RECEIVED_INVOICETYPE
+            - SAP_PAYMENT_RECEIVED_DOCTYPE
+            - SAP_PAYMENT_RECEIVED_LINENUM
+            - TZ=America/Bogota
+        ports:
+            - ${MS_SAP_API_PORT}:${MS_SAP_API_PORT}
+        image: sap_ms_sap_api:${TAG_ms_sap_api}
+        networks:
+            sap_network:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+
+
+
+    ms_esb_inventories:
+        environment:
+            - DEBUG
+            - PORT=${MS_ESB_INVENTORIES_PORT}
             - MONGODB_NAME
             - MONGODB_HOST
             - MONGODB_PORT
@@ -68,10 +150,16 @@ services:
             - MONGODB_PASSWORD
             - MONGODB_POOL_SIZE
             - MONGODB_REPLICA_SET_NAME
+            - MS_VTEX_API_HOST
+            - MS_VTEX_API_PORT
+            - MS_ESB_PRODUCT_HOST
+            - MS_ESB_PRODUCT_PORT
             - TZ=America/Bogota
-        image: kte_ms_core_authorization:${TAG_ms_core_authorization}
+        ports:
+            - ${MS_ESB_INVENTORIES_PORT}:${MS_ESB_INVENTORIES_PORT}
+        image: sap_ms_esb_inventories:${TAG_ms_esb_inventories}
         networks:
-            kte_network:
+            sap_network:
         deploy:
             mode: replicated
             replicas: 1
@@ -80,10 +168,10 @@ services:
 
 
 
-    ms_core_router:
+    ms_esb_order:
         environment:
             - DEBUG
-            - PORT=${MS_CORE_ROUTER_PORT}
+            - PORT=${MS_ESB_ORDER_PORT}
             - MONGODB_NAME
             - MONGODB_HOST
             - MONGODB_PORT
@@ -91,20 +179,26 @@ services:
             - MONGODB_PASSWORD
             - MONGODB_POOL_SIZE
             - MONGODB_REPLICA_SET_NAME
-            - MS_MLM_ADMIN_HOST
-            - MS_MLM_ADMIN_PORT
-            - MS_MLM_CLIENT_HOST
-            - MS_MLM_CLIENT_PORT
-            - MS_MLM_POS_HOST
-            - MS_MLM_POS_PORT
-            - MS_MLM_SHIPPING_HOST
-            - MS_MLM_SHIPPING_PORT
-            - MS_MLM_BULKLOAD_HOST
-            - MS_MLM_BULKLOAD_PORT
+            - MS_VTEX_API_HOST
+            - MS_VTEX_API_PORT
+            - MS_SAP_API_HOST
+            - MS_SAP_API_PORT
+            - SAP_WAREHOUSES
+            - SAP_CLIENT_ADDRESS_NAME
+            - SAP_CLIENT_DOCUMENT_TYPE
+            - SAP_U_SOL_ORIGEN
+            - SAP_CLIENT_GROUP_CODE
+            - SAP_CLIENT_PRICE_LIST
+            - SAP_SERIE_KEY_WORD
+            - SAP_ORDER_SERIE
+            - SAP_INVOICE_SERIE
+            - SAP_PAYMENT_SERIE
             - TZ=America/Bogota
-        image: kte_ms_core_router:${TAG_ms_core_router}
+        ports:
+            - ${MS_ESB_ORDER_PORT}:${MS_ESB_ORDER_PORT}
+        image: sap_ms_esb_order:${TAG_ms_esb_order}
         networks:
-            kte_network:
+            sap_network:
         deploy:
             mode: replicated
             replicas: 1
@@ -113,31 +207,98 @@ services:
 
 
 
-    ms_core_email:
+    ms_esb_prices:
         environment:
             - DEBUG
-            - PORT=${MS_CORE_EMAIL_PORT}
-            - GMAIL_SMTP_RELAY_HOST
-            - GMAIL_SMTP_RELAY_PORT
-            - GMAIL_SMTP_RELAY_SENDER_DOMAIN
-            - GMAIL_SMTP_RELAY_SENDER_NAME
-            - GMAIL_SMTP_RELAY_SENDER_ADDRESS
-            - KTE_FRONT_MLM_POS
-            - KTE_FRONT_MLM_CLIENT
-            - KTE_FRONT_MLM_ADMIN
+            - PORT=${MS_ESB_PRICES_PORT}
+            - MONGODB_NAME
+            - MONGODB_HOST
+            - MONGODB_PORT
+            - MONGODB_USER
+            - MONGODB_PASSWORD
+            - MONGODB_POOL_SIZE
+            - MONGODB_REPLICA_SET_NAME
+            - MS_VTEX_API_HOST
+            - MS_VTEX_API_PORT
+            - MS_ESB_PRODUCT_HOST
+            - MS_ESB_PRODUCT_PORT
             - TZ=America/Bogota
-        image: kte_ms_core_email:${TAG_ms_core_email}
+        ports:
+            - ${MS_ESB_PRICES_PORT}:${MS_ESB_PRICES_PORT}
+        image: sap_ms_esb_prices:${TAG_ms_esb_prices}
         networks:
-            kte_network:
+            sap_network:
         deploy:
             mode: replicated
             replicas: 1
             restart_policy:
                 condition: on-failure
 
+
+
+    ms_esb_product:
+        environment:
+            - DEBUG
+            - PORT=${MS_ESB_PRODUCT_PORT}
+            - MONGODB_NAME
+            - MONGODB_HOST
+            - MONGODB_PORT
+            - MONGODB_USER
+            - MONGODB_PASSWORD
+            - MONGODB_POOL_SIZE
+            - MONGODB_REPLICA_SET_NAME
+            - MS_VTEX_API_HOST
+            - MS_VTEX_API_PORT
+            - MS_SAP_API_HOST
+            - MS_SAP_API_PORT
+            - FORCE_ESPECIFICATIONS_MAPPING_REPOPULATION
+            - TZ=America/Bogota
+        ports:
+            - ${MS_ESB_PRODUCT_PORT}:${MS_ESB_PRODUCT_PORT}
+        image: sap_ms_esb_product:${TAG_ms_esb_product}
+        networks:
+            sap_network:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
+
+
+
+    ms_esb_queue:
+        environment:
+            - DEBUG
+            - PORT=${MS_ESB_QUEUE_PORT}
+            - MONGODB_NAME
+            - MONGODB_HOST
+            - MONGODB_PORT
+            - MONGODB_USER
+            - MONGODB_PASSWORD
+            - MONGODB_POOL_SIZE
+            - MONGODB_REPLICA_SET_NAME
+            - MS_ESB_PRICES_HOST
+            - MS_ESB_PRICES_PORT
+            - MS_ESB_PRODUCT_HOST
+            - MS_ESB_PRODUCT_PORT
+            - MS_ESB_INVENTORIES_HOST
+            - MS_ESB_INVENTORIES_PORT
+            - MS_ESB_ORDER_HOST
+            - MS_ESB_ORDER_PORT
+            - TZ=America/Bogota
+        ports:
+            - ${MS_ESB_QUEUE_PORT}:${MS_ESB_QUEUE_PORT}
+        image: sap_ms_esb_queue:${TAG_ms_esb_queue}
+        networks:
+            sap_network:
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+                condition: on-failure
 
 
 
 networks:
-    sur_network:
+    sap_network:
         driver: overlay
