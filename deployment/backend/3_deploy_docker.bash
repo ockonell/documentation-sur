@@ -46,11 +46,11 @@ do
 	echo $ms
 	cd ${ms}
 	pwd
-	LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-	echo "LATEST TAG: $LATEST_TAG"
-	IMAGE="kte_$ms:$LATEST_TAG"
+	LATEST_VERSION=$(head -n 1 src/version.js | cut -d '=' -f 2)
+	echo "LATEST TAG: $LATEST_VERSION"
+	IMAGE="sap_$ms:$LATEST_VERSION"
 	echo "Building Image ${IMAGE}"
-	export "TAG_$ms=$LATEST_TAG"
+	export "TAG_$ms=$LATEST_VERSION"
 	docker build -t $IMAGE .
 	cd ..
 done
