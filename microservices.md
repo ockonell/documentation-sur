@@ -10,7 +10,7 @@
  - Un MS debe tener su propio repositorio.
  - Un MS puede tener varias Instancias. Las instancias se crean y se destruyen constantemente. Por lo tanto los microservicios no deben usar el disco duro como medio de almacenamiento. Las rutinas como *cron-jobs* deben sincronizarce por la base de datos de microservicio.
 
-En teoría los Microservicios pueden estar escritos en cualquier lenguaje de programación y pueden usar cualquier base de datos. Sin embargo para facilitar el despliegue y la mantenibilidad del sistema, se recomienda al desarrollador usar ***NODE JS*** y **MONGO DB** en lo posible. Al momento de escribir estos lineamientos las versiones disponibles son NODE 12LTS y MONGO 4.2. 
+En teoría los Microservicios pueden estar escritos en cualquier lenguaje de programación y pueden usar cualquier base de datos. Sin embargo para facilitar el despliegue y la mantenibilidad del sistema, se recomienda al desarrollador usar ***NODE JS*** y **MONGO DB** en lo posible. Al momento de escribir estos lineamientos las versiones disponibles son NODE 14.17.0LTS y MONGO 4.2. 
 
 ### Propiedades
 Un microservcio debe tener las siguientes propiedades, todas los nombres de las propiededas deben contener Letras UPPERCASE o números. El único caracter separador de palabras debe ser "_", en resumen los nombres deben cumplir ```/^[A-Z][_A-Z0-9]*[A-Z0-9]$/```:
