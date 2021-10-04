@@ -16,9 +16,7 @@ do
 	cd ${ms}
 	git checkout master
 	git pull
-	git fetch --all --tags
-	LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-	echo "LATEST TAG: $LATEST_TAG"
-	git checkout $LATEST_TAG
+	LATEST_VERSION=$(head -n 1 src/version.js | cut -d '=' -f 2)
+	echo "LATEST TAG: $LATEST_VERSION"
 	cd ..
 done
