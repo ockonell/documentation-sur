@@ -15,7 +15,7 @@ cd $MICROSERVICES_FOLDER
 
 MS_FOLDER_TEMP=$(pwd)
 
-fetch_kte_backend_project(){
+fetch_sur_backend_project(){
 	echo '-------------------------------------------------------------------------'
 	MS_NAME=$1
 	echo "MICROSERVICE: $MS_NAME"
@@ -25,12 +25,16 @@ fetch_kte_backend_project(){
 }
 
 
-fetch_kte_backend_project "ms_core_cron"
-fetch_kte_backend_project "ms_core_hook"
-fetch_kte_backend_project "ms_esb_inventories"
-fetch_kte_backend_project "ms_esb_order"
-fetch_kte_backend_project "ms_esb_prices"
-fetch_kte_backend_project "ms_esb_product"
-fetch_kte_backend_project "ms_esb_queue"
-fetch_kte_backend_project "ms_vtex_api"
-fetch_kte_backend_project "ms_sap_api"
+fetch_sur_backend_project "ms_core_cron"
+fetch_sur_backend_project "ms_core_hook"
+fetch_sur_backend_project "ms_esb_inventories"
+fetch_sur_backend_project "ms_esb_order"
+fetch_sur_backend_project "ms_esb_prices"
+fetch_sur_backend_project "ms_esb_product"
+fetch_sur_backend_project "ms_esb_queue"
+fetch_sur_backend_project "ms_vtex_api"
+fetch_sur_backend_project "ms_sap_api"
+fetch_sur_backend_project "ms_core_gateway"
+fetch_sur_backend_project "ms_core_authentication"
+fetch_sur_backend_project "ms_core_authorization"
+fetch_sur_backend_project "ms_core_router"
