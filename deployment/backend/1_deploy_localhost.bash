@@ -23,10 +23,18 @@ trap int_trap INT
 
 MICROSERVICES=`ls $FOLDER`
 for ms_name in $MICROSERVICES; do
-	echo $ms_name
-	cd "$FOLDER/$ms_name/"
-	npm run dev &
-	cd ../..
+	if [[ ("$ms_name" == "ms_sap_api") ]];
+	then
+		echo $ms_name
+		cd "$FOLDER/$ms_name/"
+		npm run starttls1 &
+		cd ../..
+	else
+		echo $ms_name
+		cd "$FOLDER/$ms_name/"
+		npm run dev &
+		cd ../..
+	fi
 done
 
 
