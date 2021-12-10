@@ -5,29 +5,12 @@ Para la instalación y despliegue de los microservicios de SAP, se deben seguir 
 ## Requerimientos previos:
 1. Instalar Nodejs 14
 2. Instalar Git
-3. Instalar las llaves ssh para comunicación directa con Git sin acceso de credenciales, estas se encuentran
-en el archivo _llaves.md_. para esto se debe utilizar el bash de git y crear la carpeta .ssh en la dirección ~/
-con el siguiente comando:
-```
-mkdir ~/.ssh
-```
-y dentro de la carpeta (cd .ssh/) crear los archivos y agregar las llaves respectivas a cada uno de ellos de la siguiente manera:
-```
-cd ~/.ssh
-vi id_rsa
-```
-**Nota**: para guardar con vi se presiona la tecla escape (esc) y se escribe las letras q (para salir) o wq (para guardar y salir).
-
-presionar la tecla _i_ y agregar la llave correspondiente como dice el archivo _llaves.md_, y se hace lo mismo para el siguiente archivo
-```
-vi id_rsa.pub
-```
-
-5. Instalar MongoDB 4.0.2
+3. Instalar MongoDB 4.0.2
 si surge el problema de iniciar el servicio de mongodb seguir instalar el siguiente programa:
 ```
 https://www.itechtics.com/microsoft-visual-c-redistributable-versions-direct-download-links/
 ```
+4. Instalar las utilidades o herramientas de mongodb para poder exportar/importar base de datos. esto es solo para windows
 
 Desps de instalar mongo, en el shell del mismo crear la bd:
 ```
@@ -36,6 +19,18 @@ use surCompany
 Crear usuario:
 ```
 db.createUser({user:'SUR',pwd:'SUR123',roles:[{role:'readWrite',db:'surCompany'}]})
+```
+
+## Backups
+Para crear un backup (copia de la base de datos) de la base de datos se ejecuta el siguiente comando:
+```
+mongodump -u SUR -p SUR123 --authenticationDatabase=surCompany -o dump/SUR
+```
+donde **-o** es el parametro para indicar donde se va a guardar la copia de la base de datos.
+
+Para restaurar (importar) una copia de la base de datos se ejecuta el siguiente comando:
+```
+mongorestore ./ -u SUR -p SUR123 --authenticationDatabase surCompany -d surCompany
 ```
 
 ## Instalación de los MS y Despliegue
@@ -51,8 +46,7 @@ db.createUser({user:'SUR',pwd:'SUR123',roles:[{role:'readWrite',db:'surCompany'}
 ./6_npm_install.bash
 ``
 
-- Se debe colocar en los archivos .env de los MS core, product y order la ip de conección a sap bussines,
-en el servidor de surCompany es: _192.168.160.12_ y el puerto _50000_.
+- Se debe colocar en el archivo .env del MS sap_api la ip de conección a sap bussines en el servidor de surCompany la cual es: _192.168.160.12_ y el puerto _50000_.
 
 - En el MS de hook se debe colocar el dominio respectivo para la comunicación de vtex con el mismo.
 
@@ -75,4 +69,19 @@ en el servidor de surCompany es: _192.168.160.12_ y el puerto _50000_.
 3) Ejecutar el script número 3:
 ``
 3_deploy_docker.bash sur .env
+``
+
+### Instalar los MS como servicios en windows
+
+1) Ejecutar el script número 9:
+``
+9_deploy_how_service.bash start
+``
+ Para el caso de reiniciar, se deben detener, eliminar e iniciar de nuevo.
+ - Nota: La función eliminar los detiene primero.
+ ``
+9_deploy_how_service.bash stop
+``
+``
+9_deploy_how_service.bash delete
 ``
